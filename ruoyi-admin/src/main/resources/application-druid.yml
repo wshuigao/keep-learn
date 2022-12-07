@@ -1,0 +1,123 @@
+# 数据源配置
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        druid:
+            # 主库数据源
+            master:
+                url: jdbc:mysql://124.221.86.44:3306/keep_learn?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: root
+                password: root
+            # 从库数据源
+            slave:
+                # 从数据源开关/默认关闭
+                enabled: false
+                url: 
+                username: 
+                password: 
+            # 初始连接数
+            initialSize: 5
+            # 最小连接池数量
+            minIdle: 10
+            # 最大连接池数量
+            maxActive: 20
+            # 配置获取连接等待超时的时间
+            maxWait: 60000
+            # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+            timeBetweenEvictionRunsMillis: 60000
+            # 配置一个连接在池中最小生存的时间，单位是毫秒
+            minEvictableIdleTimeMillis: 300000
+            # 配置一个连接在池中最大生存的时间，单位是毫秒
+            maxEvictableIdleTimeMillis: 900000
+            # 配置检测连接是否有效
+            validationQuery: SELECT 1 FROM DUAL
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+            webStatFilter: 
+                enabled: true
+            statViewServlet:
+                enabled: true
+                # 设置白名单，不填则允许所有访问
+                allow:
+                url-pattern: /druid/*
+                # 控制台管理用户名和密码
+                login-username: ruoyi
+                login-password: 123456
+            filter:
+                stat:
+                    enabled: true
+                    # 慢SQL记录
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+    # redis 配置
+    redis:
+        # 地址
+        host: 124.221.86.44
+        # 端口，默认为6379
+        port: 6379
+        # 数据库索引
+        database: 0
+        # 密码
+        password: root
+        # 连接超时时间
+        timeout: 10s
+        lettuce:
+            pool:
+                # 连接池中的最小空闲连接
+                min-idle: 0
+                # 连接池中的最大空闲连接
+                max-idle: 8
+                # 连接池的最大数据库连接数
+                max-active: 8
+                # #连接池最大阻塞等待时间（使用负值表示没有限制）
+                max-wait: -1ms
+
+    # rabbitmq 配置
+    rabbitmq:
+        host: 124.221.86.44
+        port: 5672
+        username: admin
+        password: admin
+        #开启消息确认模式，新版本已经弃用
+        #publisher-confirms: true
+        #开启消息送达提示
+        publisher-returns: true
+        # springboot.rabbitmq.publisher-confirm 新版本已被弃用，现在使用 spring.rabbitmq.publisher-confirm-type = correlated 实现相同效果
+        publisher-confirm-type: correlated
+        virtual-host: /test
+        listener:
+            type: simple
+            simple:
+                acknowledge-mode: auto #确认模式
+                prefetch: 1 #限制每次发送一条数据。
+                concurrency: 1 #同一个队列启动几个消费者
+                max-concurrency: 3 #启动消费者最大数量
+                #重试策略相关配置
+                retry:
+                    # 开启消费者(程序出现异常)重试机制，默认开启并一直重试
+                    enabled: true
+                    # 最大重试次数
+                    max-attempts: 5
+                    # 重试间隔时间(毫秒)
+                    initial-interval: 3000
+
+#  分布式文件系统 FastDFS  配置
+fdfs:
+    # 连接tracker服务器超时时长
+    connect-timeout: 1500
+    # socket连接超时时长
+    so-timeout: 600
+    # tracker服务所在的IP地址和端口号 ( #TrackerList参数,支持多个，我这里只有一个，如果有多个在下方加- x.x.x.x:port)
+    tracker-list:
+        - 124.221.86.44:22122
+    #缩略图生成参数，可选
+    thumb-image:
+        height: 150
+        width: 150
