@@ -1,6 +1,9 @@
 package com.ruoyi.common.pdf;
 
 import com.alibaba.fastjson2.JSON;
+import com.ruoyi.common.asynThreadTask.ITaskProcesser;
+import com.ruoyi.common.asynThreadTask.TaskResult;
+import com.ruoyi.common.asynThreadTask.TaskResultType;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -28,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * wkhtmltopdf 转换工具类
  */
-public class HtmlToPdfUtil {
+public class HtmlToPdfUtil implements ITaskProcesser<String,String> {
 
   private static final Logger log = LoggerFactory.getLogger(HtmlToPdfUtil.class);
 
@@ -278,67 +281,86 @@ public class HtmlToPdfUtil {
   }
 
 
-  public static void main(String[] args) throws TemplateException, IOException {
-    long startTime = System.currentTimeMillis();
-    log.info("generate pdf start ... ");
+  @Override
+  public TaskResult<String> taskExecute(String data) {
+  // data 是传来的单条业务数据，以下写死的数据 应该从这个data中拿
 
-    // 初始化一个文件夹路径
-    Calendar calendar = Calendar.getInstance();//得到日历
-    calendar.setTime(new Date());   //设置当前日期
-    String yearStr = calendar.get(Calendar.YEAR) + "";//获取当前年
-    int month = calendar.get(Calendar.MONTH) + 1;//获取月份
-    int day = calendar.get(Calendar.DATE);//获取天
+    String destPath = null;
+    try {
 
-    // 文件最终存放的文件夹路径
-    String folderPath = "D:\\pdf\\" + yearStr + "\\" + month + "\\" + day;
+      // 手动搞一个失败的任务
+      if(data.equals("19")){
+        throw new RuntimeException("手动抛出异常");
+      }
 
-    //////////////////////////////////以下模拟数据取请求\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    //1.拿取要加载的数据
-    Map<String, Object> echartData = new HashMap<>();
-    echartData.put("flagVal", 1);// 这个是标识,用于传入html中转换数据格式
-    echartData.put("name", "wh");
-    echartData.put("text", "Echart 折线图");
-    List<String> xAxisList = new ArrayList<>();
-    xAxisList.add("衬衫");
-    xAxisList.add("羊毛衫");
-    xAxisList.add("雪纺衫");
-    xAxisList.add("裤子");
-    xAxisList.add("高跟鞋");
-    xAxisList.add("袜子");
-    echartData.put("xAxisData", JSON.toJSONString(xAxisList));
 
-    List<Object> seriesList = new ArrayList<>();
-    Map<String, Object> seriesMap = new HashMap<>();
-    seriesMap.put("name", "销量");
-    seriesMap.put("type", "bar");
-    int[] arr = {5, 20, 36, 10, 10, 20};
-    seriesMap.put("data", arr);
-    seriesList.add(seriesMap);
-    echartData.put("series", JSON.toJSONString(seriesList));
-    //////////////////////////////////以上模拟数据取请求\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+      long startTime = System.currentTimeMillis();
+      log.info("generate pdf start ... ");
 
-    //2.填充html
-    // 要使用的html模板
-    String htmlTemplate = "test_template.html";
-    // 要使用的html模板存放位置
-    String templatePath = "D:\\Code\\owntest\\keep-learn\\ruoyi-admin\\src\\main\\resources\\templates";
+      // 初始化一个文件夹路径
+      Calendar calendar = Calendar.getInstance();//得到日历
+      calendar.setTime(new Date());   //设置当前日期
+      String yearStr = calendar.get(Calendar.YEAR) + "";//获取当前年
+      int month = calendar.get(Calendar.MONTH) + 1;//获取月份
+      int day = calendar.get(Calendar.DATE);//获取天
 
-    //临时文件名称
-    String htmName = "a";
-    // 临时 html 文件路径
-    String srcPath = saveHtml(echartData, htmlTemplate, templatePath, folderPath, htmName);
+      // 文件最终存放的文件夹路径
+      String folderPath = "D:\\pdf\\" + yearStr + "\\" + month + "\\" + day;
 
-    //3.执行html到pdf的转换
-    // pdf文档存储路径,以及名称
-    String destPath = folderPath + "\\1.pdf";
-    boolean convert = HtmlToPdfUtil.convert(srcPath, destPath);
+      //////////////////////////////////以下模拟数据取请求\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+      //1.拿取要加载的数据
+      Map<String, Object> echartData = new HashMap<>();
+      echartData.put("flagVal", 1);// 这个是标识,用于传入html中转换数据格式
+      echartData.put("name", "wh");
+      echartData.put("text", "Echart 折线图");
+      List<String> xAxisList = new ArrayList<>();
+      xAxisList.add("衬衫");
+      xAxisList.add("羊毛衫");
+      xAxisList.add("雪纺衫");
+      xAxisList.add("裤子");
+      xAxisList.add("高跟鞋");
+      xAxisList.add("袜子");
+      echartData.put("xAxisData", JSON.toJSONString(xAxisList));
 
-    // html转pdf成功,删除临时html
-    if (convert) {
-      Files.delete(new File(srcPath).toPath());
-      log.info("临时 {} DELETE SUCCESS", srcPath);
+      List<Object> seriesList = new ArrayList<>();
+      Map<String, Object> seriesMap = new HashMap<>();
+      seriesMap.put("name", "销量");
+      seriesMap.put("type", "bar");
+      int[] arr = {5, 20, 36, 10, 10, 20};
+      seriesMap.put("data", arr);
+      seriesList.add(seriesMap);
+      echartData.put("series", JSON.toJSONString(seriesList));
+      //////////////////////////////////以上模拟数据取请求\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+      //2.填充html
+      // 要使用的html模板
+      String htmlTemplate = "test_template.html";
+      // 要使用的html模板存放位置
+      String templatePath = "D:\\Code\\owntest\\keep-learn\\ruoyi-admin\\src\\main\\resources\\templates";
+
+      //临时文件名称
+      // 临时 html 文件路径
+      String srcPath = saveHtml(echartData, htmlTemplate, templatePath, folderPath, data);
+
+      //3.执行html到pdf的转换
+      // pdf文档存储路径,以及名称
+      destPath = folderPath + "\\"+data+".pdf";
+      boolean convert = HtmlToPdfUtil.convert(srcPath, destPath);
+
+      // html转pdf成功,删除临时html
+      if (convert) {
+        Files.delete(new File(srcPath).toPath());
+        log.info("临时 {} DELETE SUCCESS", srcPath);
+      }
+
+      log.info("total time(ms)={}", System.currentTimeMillis() - startTime);
+
+      return new TaskResult<String>(TaskResultType.SUCCESS,destPath);
+
+    }catch (Exception e) {
+      return new TaskResult<String>(TaskResultType.FAILURE,destPath+"处理失败",e.getMessage());
     }
 
-    log.info("total time(ms)={}", System.currentTimeMillis() - startTime);
   }
+
 }

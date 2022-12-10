@@ -97,7 +97,7 @@ public class PendJobPool {
     JobInfo<R> jobInfo = (JobInfo<R>) jobInfoMap.get(jobName);
     // 为空表示任务已经结束，而且到期从任务队列中清除掉了
     if(null == jobInfo){
-      throw new RuntimeException(jobName+" -非法任务！");
+      throw new RuntimeException(jobName+" -已经执行完，非法任务！");
     }
     return jobInfo;
   }

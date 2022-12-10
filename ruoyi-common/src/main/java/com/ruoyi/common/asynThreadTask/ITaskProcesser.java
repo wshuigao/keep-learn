@@ -1,5 +1,7 @@
 package com.ruoyi.common.asynThreadTask;
 
+import java.security.NoSuchAlgorithmException;
+
 /**
  * 框架使用者要实现的任务接口，因为任务的性质再调用的时候才知道，所以传参用泛型，T是传参类型，R是返回类型
  *  通用多线程调度任务框架-业务场景：批量任务执行 并 要查看执行进度 且 对业务开发人员友好
@@ -16,7 +18,7 @@ public interface ITaskProcesser<T,R> {
    * @param data 方法需要使用的业务数据
    * @return 方法执行后返回的业务结果
    */
-  TaskResult<R> taskExecute(T data) throws InterruptedException;
+  TaskResult<R> taskExecute(T data) throws InterruptedException, NoSuchAlgorithmException;
 
 
 

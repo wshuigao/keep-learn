@@ -67,6 +67,8 @@ public class JobInfo<R> {
         while ((taskResult = taskDetailQueue.pollFirst()) != null) {
             taskList.add(taskResult);
         }
+//        taskList.add(taskDetailQueue.pollFirst());
+
         return taskList;
     }
 
