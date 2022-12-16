@@ -152,6 +152,19 @@
         </dependency>
 
 
+        <!-- 添加activiti和SpringBoot整合的依赖 -->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter</artifactId>
+        </dependency>
+        <!--activiti可以绘制流程的的依赖-->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-image-generator</artifactId>
+        </dependency>
+
+
+
     </dependencies>
 
 </project>

@@ -8,7 +8,7 @@ spring:
             master:
                 url: jdbc:mysql://124.221.86.44:3306/keep_learn?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: root
+                password: 1q2w3e4r
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
@@ -107,6 +107,22 @@ spring:
                     max-attempts: 5
                     # 重试间隔时间(毫秒)
                     initial-interval: 3000
+
+    # activiti工作流
+    activiti:
+        #1.flase：默认值。activiti在启动时，对比数据库表中保存的版本，如果没有表或者版本不匹配，将抛出异常
+        #2.true： activiti会对数据库中所有表进行更新操作。如果表不存在，则自动创建
+        #3.create_drop： 在activiti启动时创建表，在关闭时删除表（必须手动关闭引擎，才能删除表）
+        #4.drop-create： 在activiti启动时删除原来的旧表，然后在创建新表（不需要手动关闭引擎）
+        database-schema-update: true
+        # 检测历史信息表是否存在，activiti7默认不生成历史信息表，开启历史表
+        db-history-used: true
+        # 历史记录存储等级
+        history-level: full
+        check-process-definitions: true
+    #不同配置文件中存在id或者name相同的bean定义，后面加载的bean定义会覆盖前面的bean定义
+    main:
+        allow-bean-definition-overriding: true
 
 #  分布式文件系统 FastDFS  配置
 fdfs:

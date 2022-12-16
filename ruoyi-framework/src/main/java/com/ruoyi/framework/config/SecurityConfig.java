@@ -119,7 +119,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     , "/fdfs/**"
                     , "/vx/**"
                     , "/pdf/**"
-//                    , "/xxxx"
+                    , "/activiti/**"
+//                    , "/xxxx/**"
                 ).permitAll()
 
                 // 除上面外的所有请求全部需要鉴权认证
